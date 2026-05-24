@@ -34,6 +34,7 @@ const server = http.createServer(async (req, res) => {
   else if (req.url === "/api/v1/ip"){
       try {
         const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
+        console.log(ip)
         const apiRes = await fetch(`https://ip.hackclub.com/ip/${ip}`);
         const apiData = await apiRes.json();
 
