@@ -2,6 +2,7 @@ const http = require('http');
 
 // Create an HTTP server
 const server = http.createServer(async (req, res) => {
+  // TODO CORS to only allow ysws
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -16,6 +17,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   console.log(pathname)
+  // TODO: Remove root after merge
   if (pathname === "/" || pathname === "/api/v1/ysws_stats") {
       try {
         const apiRes = await fetch('https://ships.hackclub.com/api/v1/stats');
