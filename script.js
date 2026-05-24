@@ -13,8 +13,8 @@ const server = http.createServer(async (req, res) => {
     res.end();
     return;
   }
-
-  if (req.url === "/api/v1/ysws_stats"){
+  console.log(req.url)
+  if (req.url === "/api/v1/ysws_stats" || "/"){
       try {
         const apiRes = await fetch('https://ships.hackclub.com/api/v1/stats');
         const apiData = await apiRes.json();
@@ -53,6 +53,6 @@ const server = http.createServer(async (req, res) => {
 });
   
 
-server.listen(8080, () => {
+server.listen(8080, '127.0.0.1', () => {
   console.log('Server running at http://localhost:8080/');
 });
