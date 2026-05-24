@@ -1,20 +1,22 @@
 const http = require('http');
-const url = require('url')
+
 // Create an HTTP server
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // const parsedUrl = url.parse(req.url)
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const pathname = parsedUrl.pathname;
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
     res.end();
     return;
   }
-  console.log(req.url)
-  if (req.url === "/api/v1/ysws_stats" || "/"){
+  console.log(pathname)
+  if (pathname === "/" || pathname === "/api/v1/ysws_stats") {
       try {
         const apiRes = await fetch('https://ships.hackclub.com/api/v1/stats');
         const apiData = await apiRes.json();
@@ -31,7 +33,7 @@ const server = http.createServer(async (req, res) => {
       }
   }
 
-  else if (req.url === "/api/v1/ip"){
+  else if (pathname === "/api/v1/ip"){
       try {
         const ip = req.headers['x-forwarded-for']?.split(',').shift() || req.socket?.remoteAddress;
         console.log(ip)
@@ -50,9 +52,15 @@ const server = http.createServer(async (req, res) => {
       }
   }
 
+  else {
+    res.statusCode = 404;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ error: 'Not found' }));
+  }
+
 });
   
 
-server.listen(8080, '127.0.0.1', () => {
+server.listen(8080, '0.0.0.0', () => {
   console.log('Server running at http://localhost:8080/');
 });
